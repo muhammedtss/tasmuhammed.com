@@ -117,7 +117,7 @@ export function HeroSection() {
                 className="gap-2 h-12 px-6 text-base border-orange-200 text-orange-700 hover:bg-orange-50 hover:text-orange-800 dark:border-orange-900/40 dark:text-orange-400 dark:hover:bg-orange-900/20 backdrop-blur-sm transition-all"
               >
                 <a 
-                    href="https://buymeacoffee.com/SENIN_KULLANICI_ADIN" // <-- BURAYI KENDİ ADINLA DEĞİŞTİR
+                    href="https://buymeacoffee.com/muhammedtss" // <-- BURAYI KENDİ ADINLA DEĞİŞTİR
                     target="_blank" 
                     rel="noopener noreferrer"
                 >
