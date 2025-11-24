@@ -29,7 +29,8 @@ export const metadata: Metadata = {
     siteName: "Muhammed Taş",
   },
   icons: {
-    icon: "/icon.png", // Birazdan ekleyeceğiz
+    icon: "/icon.png",
+    apple: "/icon.png",
   },
 };
 
