@@ -8,7 +8,7 @@ import {
   createSupporter, deleteSupporter, getSupporters
 } from "@/lib/actions";
 
-import { PostForm } from "@/components/admin/post-form"; // YENİ FORM BİLEŞENİN
+import { PostForm } from "@/components/admin/post-form"; 
 import { logout } from "@/lib/auth";
 
 import { Button } from "@/components/ui/button";
@@ -19,10 +19,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImageUpload } from "@/components/utils/image-upload";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { 
   Trash2, LayoutDashboard, LogOut, MessageSquare, 
   FlaskConical, FileText, User,
-  Waypoints, Layers, Heart, Sparkles
+  Waypoints, Layers, Heart, 
+  Eye, Edit 
 } from "lucide-react";
 import Image from "next/image";
 
@@ -78,15 +80,13 @@ export default async function AdminDashboard() {
         </TabsList>
 
         {/* ======================= 
-            1. BLOG SEKMESİ (YENİLENMİŞ)
+            1. BLOG SEKMESİ
            ======================= */}
         <TabsContent value="blog" className="space-y-10 animate-in fade-in slide-in-from-bottom-2">
-            {/* Yeni Gelişmiş Form */}
             <div className="border border-primary/10 rounded-xl overflow-hidden shadow-sm">
                 <PostForm />
             </div>
 
-            {/* Mevcut Yazılar Listesi */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold flex items-center gap-2">
@@ -104,7 +104,7 @@ export default async function AdminDashboard() {
                                     </div>
                                 )}
                                 <div>
-                                    <h3 className="font-bold text-base">{post.title}</h3>
+                                    <h3 className="font-bold text-base line-clamp-1">{post.title}</h3>
                                     <div className="flex items-center gap-2 mt-1">
                                         <Badge variant={post.published ? "default" : "secondary"} className="text-[10px] h-5">
                                             {post.published ? "Yayında" : "Taslak"}
@@ -112,17 +112,33 @@ export default async function AdminDashboard() {
                                         <Badge variant="outline" className="text-[10px] h-5">
                                             {post.category}
                                         </Badge>
-                                        <span className="text-xs text-muted-foreground ml-1">
+                                        <span className="text-xs text-muted-foreground ml-1 hidden sm:inline">
                                             {new Date(post.createdAt).toLocaleDateString("tr-TR")}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <form action={deletePost.bind(null, post.id)}>
-                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                                    <Trash2 className="h-5 w-5" />
+
+                            <div className="flex items-center gap-2 self-end md:self-center">
+                                {/* Button asChild kullanarak Link hatasını çözdük */}
+                                <Button variant="outline" size="icon" title="Sitede Gör" asChild>
+                                    <Link href={`/blog/${post.slug}`} target="_blank">
+                                        <Eye className="h-4 w-4" />
+                                    </Link>
                                 </Button>
-                            </form>
+
+                                <Button variant="outline" size="icon" title="Düzenle" asChild>
+                                    <Link href={`/admin/blog/${post.id}`}>
+                                        <Edit className="h-4 w-4" />
+                                    </Link>
+                                </Button>
+
+                                <form action={deletePost.bind(null, post.id)}>
+                                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" title="Sil">
+                                        <Trash2 className="h-5 w-5" />
+                                    </Button>
+                                </form>
+                            </div>
                         </div>
                     ))}
                     {posts.length === 0 && (
@@ -159,7 +175,7 @@ export default async function AdminDashboard() {
                {projects.map((project) => (
                  <div key={project.id} className="flex items-center justify-between p-4 rounded-xl border bg-card/40 hover:bg-card/60 transition-all">
                     <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-lg bg-muted overflow-hidden relative border">
+                        <div className="h-12 w-12 rounded-lg bg-muted overflow-hidden relative border flex-shrink-0">
                             {project.imageUrl ? <Image src={project.imageUrl} alt={project.title} fill className="object-cover"/> : <div className="w-full h-full flex items-center justify-center bg-secondary">P</div>}
                         </div>
                         <div><h3 className="font-bold">{project.title}</h3><p className="text-xs text-muted-foreground">{project.tags}</p></div>
@@ -325,11 +341,13 @@ export default async function AdminDashboard() {
                         <div className="space-y-4">
                              <div className="space-y-2">
                                 <label className="text-sm font-medium">Unvan (Headline)</label>
-                                <Input name="headline" defaultValue={profile?.headline} placeholder="Örn: Full Stack Developer" className="bg-background/50"/>
+                                {/* DÜZELTME: || "" eklendi */}
+                                <Input name="headline" defaultValue={profile?.headline || ""} placeholder="Örn: Full Stack Developer" className="bg-background/50"/>
                              </div>
                              <div className="space-y-2">
                                 <label className="text-sm font-medium">Biyografi</label>
-                                <Textarea name="bio" defaultValue={profile?.bio} placeholder="Kısa biyografi..." rows={4} className="bg-background/50"/>
+                                {/* DÜZELTME: || "" eklendi */}
+                                <Textarea name="bio" defaultValue={profile?.bio || ""} placeholder="Kısa biyografi..." rows={4} className="bg-background/50"/>
                              </div>
                         </div>
 

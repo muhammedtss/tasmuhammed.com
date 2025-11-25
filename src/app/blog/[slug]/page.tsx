@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
+import { MarkdownRenderer } from "@/components/features/markdown-renderer";
 
 // Next.js 15: params artık bir Promise, bu yüzden tipi böyle tanımlıyoruz
 type Props = {

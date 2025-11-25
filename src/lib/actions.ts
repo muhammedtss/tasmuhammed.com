@@ -252,3 +252,39 @@ export async function updateProfile(formData: FormData) {
   
   revalidatePath("/"); revalidatePath("/admin");
 }
+// lib/actions.ts içine ekle:
+
+export async function updatePost(formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string || "";
+  const content = formData.get("content") as string;
+  const coverImage = formData.get("coverImage") as string || null;
+  const tags = formData.get("tags") as string || "";
+  const category = formData.get("category") as string || "General";
+  
+  const published = formData.get("published") === 'on';
+  const featured = formData.get("featured") === 'on';
+
+  // Slug'ı başlık değişse bile sabit tutmak isteyebilirsin, 
+  // ama değiştirmek istersen slug oluşturma kodunu buraya da koyabilirsin.
+  // Şimdilik slug'ı sabit tutuyoruz ki linkler kırılmasın.
+
+  await prisma.post.update({
+    where: { id },
+    data: { 
+      title, 
+      description, 
+      content, 
+      coverImage, 
+      tags, 
+      category,
+      published,
+      featured
+    } 
+  });
+  
+  revalidatePath("/blog"); 
+  revalidatePath("/admin");
+  revalidatePath(`/admin/blog/${id}`); // Edit sayfasını da yenile
+}
