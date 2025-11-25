@@ -1,3 +1,4 @@
+import { SupportButton } from "@/components/features/support-button";
 import { getPost, clapPost } from "@/lib/actions"; // clapPost eklendi
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -77,4 +78,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
     </article>
   );
+
 }
+// ...
+<div className="mt-10 pt-6 border-t flex justify-between items-center">
+   <p className="text-muted-foreground">Yazıyı beğendin mi?</p>
+   <SupportButton />
+</div>

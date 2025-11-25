@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/ui/mode-toggle"; // Tema butonu
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   Sheet,
   SheetContent,
@@ -15,12 +15,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-// MENÜ LİNKLERİ (Blog Eklendi)
+// MENÜ LİNKLERİ
 const navItems = [
   { name: "Home", href: "/" },
   { name: "Lab", href: "/lab" },
   { name: "Stack", href: "/stack" },
-  { name: "Blog", href: "/blog" }, // <-- YENİ
+  { name: "Blog", href: "/blog" },
   { name: "Roadmap", href: "/roadmap" },
   { name: "Guestbook", href: "/guestbook" },
 ];
@@ -50,13 +50,14 @@ export function Header() {
               className={cn(
                 "transition-colors hover:text-primary",
                 pathname === item.href
-                  ? "text-primary" // Aktif sayfa rengi
+                  ? "text-primary"
                   : "text-muted-foreground"
               )}
             >
               {item.name}
             </Link>
           ))}
+        </nav>
 
         {/* Sağ Taraf (Tema Butonu & Mobil Menü) */}
         <div className="flex items-center gap-2">
@@ -84,9 +85,9 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="pr-0">
-                <SheetHeader>
-                    <SheetTitle className="font-mono font-bold text-left ml-4">MENU</SheetTitle>
-                </SheetHeader>
+              <SheetHeader>
+                <SheetTitle className="font-mono font-bold text-left ml-4">MENU</SheetTitle>
+              </SheetHeader>
               <div className="flex flex-col space-y-4 py-4 pl-4">
                 {navItems.map((item) => (
                   <Link
