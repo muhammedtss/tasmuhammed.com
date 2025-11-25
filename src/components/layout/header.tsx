@@ -57,12 +57,6 @@ export function Header() {
               {item.name}
             </Link>
           ))}
-          
-          {/* Admin Girişi (Sadece masaüstünde görünür, silik durur) */}
-          <Link href="/admin" className="text-muted-foreground hover:text-primary text-xs opacity-50 ml-4 hidden lg:inline">
-            Admin
-          </Link>
-        </nav>
 
         {/* Sağ Taraf (Tema Butonu & Mobil Menü) */}
         <div className="flex items-center gap-2">

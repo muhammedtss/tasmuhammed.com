@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpen, Code2, Terminal, Cpu } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, Terminal, Cpu, Coffee } from "lucide-react";
 import { ParticleBackground } from "@/components/ui/particle-background";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -102,10 +102,29 @@ export function HeroSection() {
                   Explore my projects <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
+              
               <Button asChild variant="outline" size="lg" className="gap-2 border-primary/20 bg-background/50 backdrop-blur-sm h-12 px-8 text-base hover:bg-primary/5">
                 <Link href="/roadmap">
                   Roadmap <BookOpen className="h-4 w-4" />
                 </Link>
+              </Button>
+
+              {/* Buy Me a Coffee Button - EKLENDİ */}
+              <Button 
+                asChild 
+                variant="outline" 
+                size="lg" 
+                className="gap-2 h-12 px-6 text-base border-orange-200 text-orange-700 hover:bg-orange-50 hover:text-orange-800 dark:border-orange-900/40 dark:text-orange-400 dark:hover:bg-orange-900/20 backdrop-blur-sm transition-all"
+              >
+                <a 
+                    href="https://buymeacoffee.com/muhammedtss" // <-- BURAYI KENDİ ADINLA DEĞİŞTİR
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                  <Coffee className="h-4 w-4" />
+                  <span className="hidden xl:inline">Buy me a Coffee</span>
+                  <span className="xl:hidden">Support</span>
+                </a>
               </Button>
             </motion.div>
           </motion.div>

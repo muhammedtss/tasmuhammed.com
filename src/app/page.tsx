@@ -1,7 +1,7 @@
 import { HeroSection } from "@/components/features/hero";
 import { HomeAboutSection } from "@/components/features/home-about";
 import { HomeGuestbookSection } from "@/components/features/home-guestbook";
-import { HomeProjectsSection } from "@/components/features/home-projects"; // <-- YENİ
+import { HomeProjectsSection } from "@/components/features/home-projects";
 
 export default function Home() {
   return (
@@ -10,13 +10,13 @@ export default function Home() {
       {/* 1. GİRİŞ (Hero) */}
       <HeroSection />
 
-      {/* 2. ÖNE ÇIKAN PROJELER (Yeni Ekledik) */}
+      {/* 2. ÖNE ÇIKAN PROJELER */}
       <HomeProjectsSection />
 
       {/* 3. HAKKIMDA (Profil Kartı) */}
       <HomeAboutSection />
       
-      {/* 4. ZİYARETÇİ NOTLARI */}
+      {/* 4. ZİYARETÇİ NOTLARI (Burada Çağırıyoruz) */}
       <HomeGuestbookSection />
       
     </main>
