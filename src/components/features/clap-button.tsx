@@ -1,52 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react"; // <-- GARANTİ İKON
-import { clapPost, clapProject } from "@/lib/actions";
-import { motion } from "framer-motion";
+import { Hand } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ClapButtonProps {
   id: string;
-  initialClaps: number;
-  type: "post" | "project";
+  initialCount: number;
+  onClap: (id: string) => Promise<void>;
 }
 
-export function ClapButton({ id, initialClaps, type }: ClapButtonProps) {
-  const [claps, setClaps] = useState(initialClaps);
-  const [isClicked, setIsClicked] = useState(false);
+export function ClapButton({ id, initialCount, onClap }: ClapButtonProps) {
+  const [count, setCount] = useState(initialCount);
+  const [pending, startTransition] = useTransition();
+  const [hasClapped, setHasClapped] = useState(false);
 
-  const handleClap = async () => {
-    // Optimistic update
-    setClaps((prev) => prev + 1);
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 300);
+  const handleClap = () => {
+    // Optimistic Update: Hemen arayüzü güncelle, bekleme yapma
+    setCount((prev) => prev + 1);
+    setHasClapped(true);
 
-    if (type === "post") {
-      await clapPost(id);
-    } else {
-      await clapProject(id);
-    }
+    startTransition(async () => {
+      await onClap(id);
+    });
   };
 
   return (
-    <div className="flex items-center gap-3">
-      <motion.div whileTap={{ scale: 0.8 }}>
-        <Button 
-          variant="outline" 
-          size="lg" 
-          onClick={handleClap}
-          className={`gap-2 border-primary/20 hover:bg-primary/10 hover:text-primary transition-all ${isClicked ? "bg-primary/20 scale-110" : ""}`}
-        >
-          {/* İkonu Heart yaptık */}
-          <Heart className={`h-5 w-5 ${isClicked ? "fill-primary text-primary" : ""}`} />
-          <span>Beğen</span>
-        </Button>
-      </motion.div>
-      
-      <div className="text-sm font-mono text-muted-foreground">
-        <span className="font-bold text-foreground">{claps}</span> kişi beğendi
+    <Button
+      variant="outline"
+      size="lg"
+      onClick={handleClap}
+      disabled={pending}
+      className={cn(
+        "group relative flex items-center gap-2 transition-all duration-300 rounded-full border-primary/20",
+        hasClapped 
+          ? "bg-primary/10 text-primary border-primary/50" 
+          : "hover:bg-primary/5 hover:border-primary/50 hover:scale-105"
+      )}
+    >
+      <div className={cn(
+        "p-1 rounded-full transition-transform duration-300",
+        hasClapped ? "scale-110" : "group-hover:scale-110"
+      )}>
+        <Hand className={cn("w-5 h-5", hasClapped && "fill-current")} />
       </div>
-    </div>
+      
+      <span className="font-bold font-mono text-base">
+        {count}
+      </span>
+
+      {/* Tıklanınca çıkan +1 animasyonu */}
+      {hasClapped && (
+        <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-primary font-bold animate-out fade-out slide-out-to-top-4 duration-1000">
+          +1
+        </span>
+      )}
+    </Button>
   );
 }
