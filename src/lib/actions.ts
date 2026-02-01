@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { Post } from "@prisma/client";
 
 // ==========================================
-// 1. BLOG İŞLEMLERİ (YENİ VE DÜZELTİLMİŞ)
+// 1. BLOG İŞLEMLERİ
 // ==========================================
 
 export async function getPosts(): Promise<Post[]> {
@@ -72,6 +72,37 @@ export async function createPost(formData: FormData) {
   revalidatePath("/admin");
 }
 
+export async function updatePost(formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string || "";
+  const content = formData.get("content") as string;
+  const coverImage = formData.get("coverImage") as string || null;
+  const tags = formData.get("tags") as string || "";
+  const category = formData.get("category") as string || "General";
+  
+  const published = formData.get("published") === 'on';
+  const featured = formData.get("featured") === 'on';
+
+  await prisma.post.update({
+    where: { id },
+    data: { 
+      title, 
+      description, 
+      content, 
+      coverImage, 
+      tags, 
+      category,
+      published,
+      featured
+    } 
+  });
+  
+  revalidatePath("/blog"); 
+  revalidatePath("/admin");
+  revalidatePath(`/admin/blog/${id}`);
+}
+
 export async function deletePost(id: string) {
   await prisma.post.delete({ where: { id } });
   revalidatePath("/blog"); 
@@ -85,7 +116,7 @@ export async function clapPost(id: string) {
 
 
 // ==========================================
-// 2. PROJE (LAB) İŞLEMLERİ (GERİ GELDİ)
+// 2. PROJE (LAB) İŞLEMLERİ
 // ==========================================
 
 export async function getProjects() {
@@ -252,39 +283,34 @@ export async function updateProfile(formData: FormData) {
   
   revalidatePath("/"); revalidatePath("/admin");
 }
-// lib/actions.ts içine ekle:
 
-export async function updatePost(formData: FormData) {
-  const id = formData.get("id") as string;
-  const title = formData.get("title") as string;
-  const description = formData.get("description") as string || "";
-  const content = formData.get("content") as string;
-  const coverImage = formData.get("coverImage") as string || null;
-  const tags = formData.get("tags") as string || "";
-  const category = formData.get("category") as string || "General";
-  
-  const published = formData.get("published") === 'on';
-  const featured = formData.get("featured") === 'on';
+// ==========================================
+// 8. SİSTEM AYARLARI (BAKIM MODU)
+// ==========================================
 
-  // Slug'ı başlık değişse bile sabit tutmak isteyebilirsin, 
-  // ama değiştirmek istersen slug oluşturma kodunu buraya da koyabilirsin.
-  // Şimdilik slug'ı sabit tutuyoruz ki linkler kırılmasın.
+export async function getMaintenanceStatus() {
+  try {
+    const config = await prisma.systemConfig.findUnique({
+      where: { key: "maintenance_mode" },
+    });
+    return config?.value === "true";
+  } catch (e) {
+    return false;
+  }
+}
 
-  await prisma.post.update({
-    where: { id },
-    data: { 
-      title, 
-      description, 
-      content, 
-      coverImage, 
-      tags, 
-      category,
-      published,
-      featured
-    } 
-  });
-  
-  revalidatePath("/blog"); 
-  revalidatePath("/admin");
-  revalidatePath(`/admin/blog/${id}`); // Edit sayfasını da yenile
+export async function toggleMaintenanceMode(currentState: boolean) {
+  try {
+    await prisma.systemConfig.upsert({
+      where: { key: "maintenance_mode" },
+      update: { value: String(!currentState) },
+      create: { key: "maintenance_mode", value: String(!currentState) },
+    });
+    
+    revalidatePath("/");
+    revalidatePath("/admin");
+    return !currentState;
+  } catch (e) {
+    throw new Error("Bakım modu değiştirilemedi");
+  }
 }

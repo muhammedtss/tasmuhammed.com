@@ -1,13 +1,15 @@
 import { 
   createProject, deleteProject, getProjects, 
   getGuestbookEntriesAdmin, deleteGuestbookEntry, toggleGuestbookEntry,
-  deletePost, getPostsAdmin,
+  deletePost, getPostsAdmin, updatePost,
   getProfile, updateProfile,
   createTimelineItem, deleteTimelineItem, getTimeline, 
   createStackItem, deleteStackItem, getStack,
-  createSupporter, deleteSupporter, getSupporters
+  createSupporter, deleteSupporter, getSupporters,
+  getMaintenanceStatus
 } from "@/lib/actions";
 
+import { MaintenanceToggle } from "@/components/admin/maintenance-toggle";
 import { PostForm } from "@/components/admin/post-form"; 
 import { logout } from "@/lib/auth";
 
@@ -29,15 +31,16 @@ import {
 import Image from "next/image";
 
 export default async function AdminDashboard() {
-  // Tüm verileri paralel çekiyoruz
-  const [projects, guestbookEntries, posts, profile, timeline, stack, supporters] = await Promise.all([
+  // Tüm verileri paralel çekiyoruz (getMaintenanceStatus eklendi)
+  const [projects, guestbookEntries, posts, profile, timeline, stack, supporters, isMaintenance] = await Promise.all([
     getProjects(),
     getGuestbookEntriesAdmin(),
     getPostsAdmin(),
     getProfile(),
     getTimeline(),
     getStack(),
-    getSupporters()
+    getSupporters(),
+    getMaintenanceStatus()
   ]);
 
   return (
@@ -57,11 +60,17 @@ export default async function AdminDashboard() {
              </p>
            </div>
         </div>
-        <form action={logout}>
-          <Button variant="destructive" size="sm" className="gap-2 shadow-md hover:shadow-lg transition-all">
-            <LogOut className="h-4 w-4" /> Çıkış Yap
-          </Button>
-        </form>
+        
+        <div className="flex items-center gap-4">
+            {/* --- BAKIM MODU SWITCH --- */}
+            <MaintenanceToggle initialStatus={isMaintenance} />
+
+            <form action={logout}>
+              <Button variant="destructive" size="sm" className="gap-2 shadow-md hover:shadow-lg transition-all">
+                <LogOut className="h-4 w-4" /> Çıkış Yap
+              </Button>
+            </form>
+        </div>
       </div>
 
       <Tabs defaultValue="blog" className="space-y-8">
@@ -341,12 +350,10 @@ export default async function AdminDashboard() {
                         <div className="space-y-4">
                              <div className="space-y-2">
                                 <label className="text-sm font-medium">Unvan (Headline)</label>
-                                {/* DÜZELTME: || "" eklendi */}
                                 <Input name="headline" defaultValue={profile?.headline || ""} placeholder="Örn: Full Stack Developer" className="bg-background/50"/>
                              </div>
                              <div className="space-y-2">
                                 <label className="text-sm font-medium">Biyografi</label>
-                                {/* DÜZELTME: || "" eklendi */}
                                 <Textarea name="bio" defaultValue={profile?.bio || ""} placeholder="Kısa biyografi..." rows={4} className="bg-background/50"/>
                              </div>
                         </div>

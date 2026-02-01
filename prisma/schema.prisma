@@ -7,7 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- BLOG POST MODELİ (Bunu eklememiştin) ---
+// --- SİSTEM AYARLARI (BAKIM MODU İÇİN) ---
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// --- MEVCUT MODELLER ---
+
 model Post {
   id          String   @id @default(cuid())
   slug        String   @unique
@@ -27,8 +36,6 @@ model Post {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-
-// --- MEVCUT MODELLERİN ---
 
 model User {
   id        String           @id @default(cuid())
@@ -79,7 +86,6 @@ model StackItem {
   createdAt DateTime @default(now())
 }
 
-// YENİ: TEŞEKKÜRLER TABLOSU
 model Supporter {
   id        String   @id @default(cuid())
   name      String
